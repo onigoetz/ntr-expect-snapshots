@@ -1,0 +1,29 @@
+{
+  "extends": [
+    "config:recommended",
+    ":automergeMinor"
+  ],
+  "schedule": "before 11pm on Monday",
+  "prConcurrentLimit": 4,
+  "packageRules": [
+    {
+      "matchManagers": [
+        "npm"
+      ],
+      "rangeStrategy": "pin"
+    },
+    {
+      "matchDepTypes": [
+        "engines",
+        "peerDependencies"
+      ],
+      "rangeStrategy": "update-lockfile"
+    }
+  ],
+  "major": {
+    "dependencyDashboardApproval": true
+  },
+  "postUpdateOptions": [
+    "yarnDedupeHighest"
+  ]
+}
