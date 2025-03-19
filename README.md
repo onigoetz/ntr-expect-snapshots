@@ -32,7 +32,8 @@ test("a snapshot", async () => {
 
 ### Updating snapshots
 
-TODO
+Updating snapshots is enabled if the --test-update-snapshots (Possible statring with Node.js 22.3.0) flag is passed
+or the SNAPSHOT_UPDATE environment variable is set to "true"
 
 ## Shortcomings
 

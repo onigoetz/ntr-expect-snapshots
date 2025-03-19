@@ -3,6 +3,10 @@ import { fileURLToPath } from 'node:url';
 import { load } from "./snapshot-manager.js";
 import { expect } from "expect";
 
+// Updating snapshots is enabled if the --test-update-snapshots (Possible statring with Node.js 22.3.0) flag is passed
+// or the SNAPSHOT_UPDATE environment variable is set to "true"
+const UPDATING_SNAPSHOTS = process.argv.includes("--test-update-snapshots") || process.env.SNAPSHOT_UPDATE === "true";
+
 export default function initSnapshot(testFile) {
   let testPath = testFile;
   if (testPath.startsWith('file:')) {
@@ -15,7 +19,7 @@ export default function initSnapshot(testFile) {
     file: testPath,
     projectDir: process.cwd(),
     recordNewSnapshots: true,
-    updating: false, // TODO : decide how to update
+    updating: UPDATING_SNAPSHOTS, 
   });
 
   let startingSnapshotCount = Array.from(manager.oldBlocksByTitle.values())
@@ -26,10 +30,12 @@ export default function initSnapshot(testFile) {
 
   let deferredSnapshotRecordings = [];
 
+  let warnedForTest = false;
+
   test.beforeEach(async (t) => {
     const testName = t.name;
 
-    currentTestExpected = manager.oldBlocksByTitle.get(testName)?.length ?? 0;
+    currentTestExpected = manager.oldBlocksByTitle.get(testName)?.snapshots.length ?? 0;
     snapshotCountCurrentTest = 0;
     let nextSnapshotIndex = 0;
 
@@ -48,6 +54,8 @@ export default function initSnapshot(testFile) {
           label: message,
         });
         if (record) {
+          // We're adding a new snapshot, the expected count should be updated
+          currentTestExpected++; 
           deferredSnapshotRecordings.push(record);
         }
 
@@ -56,7 +64,7 @@ export default function initSnapshot(testFile) {
           message: () => {
             //const formatter = manager.formatDescriptorDiff(result.actual, result.expected, {invert: true});
             //'\n' + formatter.label + '\n\n' + formatter.formatted + 
-            return matcherHint(".toMatchSnapshot") + '\n' + printDiffOrStringify(
+            return matcherHint(".toMatchSnapshot", undefined, '') + '\n' + printDiffOrStringify(
               manager.format(result.actual),
               manager.format(result.expected),
               "Expected",
@@ -71,29 +79,39 @@ export default function initSnapshot(testFile) {
 
   test.afterEach(async (t) => {
     const testName = t.name;
-
     testsRan.add(testName);
-  });
 
+    // Make sure we saw the right number of snapshots
+    if (snapshotCountCurrentTest !== currentTestExpected && !UPDATING_SNAPSHOTS) {
+      warnedForTest = true;
+      throw new Error(`Expected snapshot count changed, expected ${currentTestExpected} but got ${snapshotCountCurrentTest} snapshots`);
+    }
+  });
 
   test.after(async () => {
     //console.log("All tests ran, found", { startingSnapshotCount, snapshotCountTotal, testFile, testsRan });
 
     // TODO :: detect if some tests were filtered or ran with "only" flag
 
-    if (startingSnapshotCount === snapshotCountTotal) {
-      if (deferredSnapshotRecordings.length > 0) {
-        console.log("Recording deferred snapshots");
-        for (const record of deferredSnapshotRecordings) {
-          record();
-        }
-      }
-    } else {
-      console.log("Snapshot count changed", { currentTestExpected, snapshotCountCurrentTest });
+    // Display a warning if some snapshots were not seen in this run
+    // However it is not needed to fail if this warning was already printed for a single test
+    // This is to avoid multiple warnings for the same test and should only be seen if a test has been removed
+    const expectedSnapshotsCount = startingSnapshotCount + deferredSnapshotRecordings.length;
+    const actualSnapshotsCount = snapshotCountTotal;
+    if (expectedSnapshotsCount !== actualSnapshotsCount && !warnedForTest && !UPDATING_SNAPSHOTS) {
 
-      // TODO :: ask user if they want to update snapshots
+      // TODO : inform user how to update snapshots
+
+      throw new Error(`Expected snapshot count changed, expected ${expectedSnapshotsCount} but got ${actualSnapshotsCount} snapshots`);
     }
 
+    // Record content for new snapshots
+    if (deferredSnapshotRecordings.length > 0) {
+      console.log("Recording ${deferredSnapshotRecordings.length} snapshots");
+      for (const record of deferredSnapshotRecordings) {
+        record();
+      }
+    }
 
     await manager.save();
   });
