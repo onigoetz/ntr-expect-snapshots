@@ -2,6 +2,7 @@ import test from "node:test";
 import { fileURLToPath } from 'node:url';
 import { load } from "./snapshot-manager.js";
 import { expect } from "expect";
+import { addSerializer } from "./format.js";
 
 // Updating snapshots is enabled if the --test-update-snapshots (Possible statring with Node.js 22.3.0) flag is passed
 // or the SNAPSHOT_UPDATE environment variable is set to "true"
@@ -18,7 +19,7 @@ export default function initSnapshot(testFile) {
   const manager = load({
     file: testPath,
     projectDir: process.cwd(),
-    recordNewSnapshots: true,
+    recordNewSnapshots: true, // TODO :: disable on CI
     updating: UPDATING_SNAPSHOTS, 
   });
 
@@ -39,6 +40,7 @@ export default function initSnapshot(testFile) {
     snapshotCountCurrentTest = 0;
     let nextSnapshotIndex = 0;
 
+    expect.addSnapshotSerializer = addSerializer;
     expect.extend({
       toMatchSnapshot(actual, message) {
         snapshotCountTotal++;
@@ -62,11 +64,9 @@ export default function initSnapshot(testFile) {
         return {
           pass: result.pass,
           message: () => {
-            //const formatter = manager.formatDescriptorDiff(result.actual, result.expected, {invert: true});
-            //'\n' + formatter.label + '\n\n' + formatter.formatted + 
             return matcherHint(".toMatchSnapshot", undefined, '') + '\n' + printDiffOrStringify(
-              manager.format(result.actual),
-              manager.format(result.expected),
+              result.actual,
+              result.expected,
               "Expected",
               "Received",
               true,
@@ -107,7 +107,7 @@ export default function initSnapshot(testFile) {
 
     // Record content for new snapshots
     if (deferredSnapshotRecordings.length > 0) {
-      console.log("Recording ${deferredSnapshotRecordings.length} snapshots");
+      console.log(`Recording ${deferredSnapshotRecordings.length} snapshots`);
       for (const record of deferredSnapshotRecordings) {
         record();
       }

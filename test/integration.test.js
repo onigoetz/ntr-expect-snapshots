@@ -13,7 +13,7 @@ test("a snapshot", async () => {
 
   const snapshotFile = path.resolve(
     path.dirname(import.meta.url.replace("file://", "")),
-    "snapshots/integration.test.js.md"
+    "snapshots/integration.test.js.snap"
   );
 
   const snapshotContent = await fs.readFile(snapshotFile, "utf-8");
