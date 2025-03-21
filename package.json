@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@jest/snapshot-utils": "30.0.0-alpha.7",
-    "memoize": "^10.1.0",
+    "ci-info": "^4.2.0",
     "pretty-format": "30.0.0-alpha.7"
   },
   "peerDependencies": {

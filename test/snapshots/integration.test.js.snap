@@ -3,3 +3,5 @@
 exports[`a snapshot//0`] = `"Lorem ipsum dolor sit amet,"`;
 
 exports[`a snapshot//1`] = `"consectetur adipiscing elit,"`;
+
+exports[`nested//0`] = `"Sub-snapshot"`;
