@@ -74,10 +74,9 @@ export default class TestManager {
       !warnedForTest &&
       !this.isUpdatingSnapshots
     ) {
-      // TODO : inform user how to update snapshots
-
       throw new Error(
-        `Expected snapshot count changed, expected ${expectedSnapshotsCount} but got ${actualSnapshotsCount} snapshots`
+        `Expected snapshot count changed, expected ${expectedSnapshotsCount} but got ${actualSnapshotsCount} snapshots.
+        To update snapshots run with SNAPSHOT_UPDATE=true or --test-update-snapshots`
       );
     }
 

@@ -57,7 +57,6 @@ export function determineSnapshotPaths({ file, fixedLocation, projectDir }) {
   const snapFile = `${name}.snap`;
 
   return {
-    dir,
     relFile,
     snapFile,
     snapPath: path.join(dir, snapFile),
@@ -98,7 +97,7 @@ export function readSnapshotFile(snapPath) {
 }
 
 export async function writeSnapshotFile(snapPath, data) {
-  await fs.promises.mkdir(this.dir, { recursive: true });
+  await fs.promises.mkdir(path.dirname(snapPath), { recursive: true });
 
   const snapshotData = {};
   for (const [title, block] of data) {

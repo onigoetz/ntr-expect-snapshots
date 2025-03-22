@@ -3,7 +3,6 @@ import { determineSnapshotPaths, cleanFile, readSnapshotFile, writeSnapshotFile,
 
 class Manager {
   constructor(options) {
-    this.dir = options.dir;
     this.recordNewSnapshots = options.recordNewSnapshots;
     this.updating = options.updating;
     this.snapFile = options.snapFile;
