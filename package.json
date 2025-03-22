@@ -17,6 +17,7 @@
     "node": ">=18"
   },
   "scripts": {
+    "build": "true",
     "test": "node --test test/*.test.js",
     "test:ci": "c8 --clean --reporter=text --reporter=lcov --reporter=html --include=src node --test test/*.test.js"
   },
