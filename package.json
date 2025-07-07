@@ -21,7 +21,7 @@
 	},
 	"dependencies": {
 		"@jest/snapshot-utils": "30.0.4",
-		"ci-info": "4.2.0",
+		"ci-info": "4.3.0",
 		"pretty-format": "30.0.2"
 	},
 	"peerDependencies": {
