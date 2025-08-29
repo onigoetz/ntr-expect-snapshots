@@ -1,7 +1,14 @@
 {
 	"name": "@onigoetz/ntr-expect-snapshot",
 	"version": "0.3.0",
-	"keywords": ["snapshot", "testing", "node", "test", "node:test", "expect"],
+	"keywords": [
+		"snapshot",
+		"testing",
+		"node",
+		"test",
+		"node:test",
+		"expect"
+	],
 	"author": "Stéphane Goetz <onigoetz@onigoetz.ch>",
 	"license": "MIT",
 	"publishConfig": {

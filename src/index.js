@@ -1,9 +1,9 @@
 import test from "node:test";
 import info from "ci-info";
 import { expect } from "expect";
-import TestManager from "./TestManager.js";
 import { addSerializer } from "./format.js";
 import { load } from "./snapshot-manager.js";
+import TestManager from "./TestManager.js";
 
 // Updating snapshots is enabled if the --test-update-snapshots (Possible statring with Node.js 22.3.0) flag is passed
 // or the SNAPSHOT_UPDATE environment variable is set to "true"
