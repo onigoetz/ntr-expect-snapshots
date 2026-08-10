@@ -12,10 +12,8 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 22.x
-          registry-url: https://registry.npmjs.org/
       - run: yarn install
       - run: yarn build
       - run: yarn test:ci
-      - run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Publish
+        run: yarn npm publish --provenance --access public
