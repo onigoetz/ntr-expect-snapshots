@@ -6,6 +6,20 @@ But using them all together at the moment is ... not so great.
 
 This package aims to provide an easy approach to use `.toMatchSnapshot` with Node.js Test Runner.
 
+## Which Node.js versions is this for?
+
+Node.js gained its test runner in **18.0.0**, but snapshot support only landed in **22.3.0**.
+This package fills that gap, so it is aimed at projects that still have to support Node.js **18.0.0 up to 22.3.0**.
+
+| Node.js version | `node:test` | Built-in snapshots | This package |
+| --------------- | ----------- | ------------------ | ------------ |
+| < 18.0.0        | ❌          | ❌                 | ❌           |
+| 18.0.0 – 22.2.x | ✅          | ❌                 | ✅ intended  |
+| >= 22.3.0       | ✅          | ✅                 | optional     |
+
+On Node.js 22.3.0 and above you can use the built-in [`t.assert.snapshot()`](https://nodejs.org/api/test.html#context-assertsnapshotvalue-options) instead.
+This package remains usable there — pick it if you prefer the `expect().toMatchSnapshot()` API or the Jest-compatible snapshot file format — but if your project only supports Node.js >= 22.3.0, the built-in support is likely all you need.
+
 ## Install
 
 ```
@@ -32,8 +46,10 @@ test("a snapshot", async () => {
 
 ### Updating snapshots
 
-Updating snapshots is enabled if the --test-update-snapshots (Possible statring with Node.js 22.3.0) flag is passed
-or the SNAPSHOT_UPDATE environment variable is set to "true"
+Updating snapshots is enabled if the `--test-update-snapshots` flag is passed (possible starting with Node.js 22.3.0)
+or the `SNAPSHOT_UPDATE` environment variable is set to `"true"`.
+
+On Node.js versions below 22.3.0 the flag does not exist, so `SNAPSHOT_UPDATE=true` is the only way to update snapshots.
 
 ## Shortcomings
 

@@ -4,5 +4,17 @@
 		"github>onigoetz/renovate-preset:recommended",
 		":preserveSemverRanges",
 		":automergeMinor"
+	],
+	"packageRules": [
+		{
+			"description": "This package targets Node.js 18.0.0 - 22.3.0 (test runner without built-in snapshots), so don't bump Node.js past 22.x",
+			"matchPackageNames": ["node"],
+			"allowedVersions": "<23"
+		},
+		{
+			"description": "c8 v11+ requires Node.js ^20.19.0 || ^22.12.0 || >=23, which drops the Node.js 18 support this package is built for",
+			"matchPackageNames": ["c8"],
+			"allowedVersions": "<11"
+		}
 	]
 }
