@@ -20,7 +20,7 @@ jobs:
         include:
           - os: macos-latest
             node-version: 22.x
-          - os: macos-14
+          - os: macos-15
             node-version: 22.x
 
     runs-on: ${{ matrix.os }}
