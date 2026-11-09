@@ -71,6 +71,7 @@ For this reason we can't decide to remove all snapshots for a test at this stage
 The initial implementation is for most parts a fork of [AVA](https://www.npmjs.com/package/ava)'s implementation.
 
 I also checked how other tools in the space work to build a coherent approach
+
 - [snap-shot-core](https://www.npmjs.com/package/snap-shot-core)
 - [@matteo.collina/snap](https://www.npmjs.com/package/@matteo.collina/snap)
 - [jest-snapshot](https://www.npmjs.com/package/jest-snapshot)
